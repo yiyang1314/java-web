@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="Null"/>
+	</settings>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC">
+			<!--type="MANAGED"不支持数据库自动提交和回滚			<property name="closeConnection" value="false"/> -->
+			</transactionManager>
+			<!-- type="[UNPOOLED|POOLED|JNDI]" -->
+			<dataSource type="POOLED">
+			  <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+			  <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+			  <property name="username" value="movebook"/>
+			  <property name="password" value="123456"/>
+			</dataSource>
+		</environment>
+	</environments>	
+	<!-- Using classpath relative resources -->
+	<mappers>
+	 <mapper resource="com/entity/mapper.xml" />
+	 <mapper resource="com/dao/mapper.xml" />
+	</mappers>
+
+</configuration>
