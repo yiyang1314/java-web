@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renting.dao.HouseStyleMapper">
+	<select id="findAll" resultType="com.renting.entity.HouseStyle">
+		select styleid,style_name as styleName from house_style	
+	</select>
+	
+	<select id="findById" resultType="com.renting.entity.HouseStyle" parameterType="java.lang.Integer">
+		select styleid,style_name as styleName from house_style	where styleid=#{styleid}
+	</select>
+
+	<update id="update" parameterType="com.renting.entity.HouseStyle">
+		update house_style
+		   set style_name=#{s.styleName}
+		 where styleid = #{s.styleid}
+	</update>
+
+	<insert id="insert" parameterType="com.renting.entity.HouseStyle">
+		insert into house_style(style_name)values(
+				#{s.styleName}
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+	 	delete from house_style where styleid=#{styleid}
+	</delete>
+	
+	<delete id="delBatchIds" parameterType="java.util.List">
+		delete from house_style where styleid in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}		
+		</foreach>
+	</delete>
+	
+	
+	
+</mapper>

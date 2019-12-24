@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renting.dao.HouseMapper">
+	
+	<resultMap type="com.renting.entity.House" id="houseinfo" >
+		<id 	column="houseid" 		property="houseid" 		/>
+		<result column="pic_path" 		property="picPath" 		/>
+		<result column="title" 			property="title" 		/>
+		<result column="house_area" 	property="houseArea" 	/>
+		<result column="house_price" 	property="housePrice" 	/>
+		<result column="house_date" 	property="houseDate" 	/>
+		<result column="phone" 			property="phone" 		/>
+		<result column="summary" 		property="summary" 		/>
+		<result column="public_date" 	property="publicDate" 	/>
+		<association column="street" 	property="street" select="com.renting.dao.TRegionMapper.getFathers">
+		</association>		
+		<association column="street" 	property="region" select="com.renting.dao.TRegionMapper.findById">
+		</association>
+		<association column="styleid" 	property="houseStyle" select="com.renting.dao.HouseStyleMapper.findById">
+		</association>
+		<association column="userid" 	property="user" select="com.renting.dao.UserMapper.findById">
+		</association>
+	</resultMap> 
+
+	<sql id="sqlFeild">
+		houseid,pic_path,title,house_area,house_price,house_date,phone,summary,public_date,styleid,street,userid
+	</sql>
+	<sql id="insertsql">
+		pic_path,title,house_area,house_price,house_date,phone,summary,public_date,styleid,street,userid
+	</sql>
+
+
+	<sql id="where_cause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="title!=null">title like '%${title}%'</if>
+			<if test="styleid!=null">and  styleid=#{styleid}</if>
+			<if test="minArea!=null">and house_area&gt;=#{minArea}</if>
+			<if test="maxArea!=null">and house_area&lt;=#{maxArea}</if>
+			<if test="minPrice!=null">and  house_price&gt;=#{minPrice}</if>
+			<if test="maxPrice!=null">and  house_price&lt;=#{maxPrice}</if>
+			<if test="upperRegion!=null">and  street=#{upperRegion}</if>
+		</trim>
+	</sql>
+	<select id="findAll" resultMap="houseinfo">
+		select  <include refid="sqlFeild"/>  from HOUSE	
+	</select>
+
+	<select id="findById" resultMap="houseinfo" parameterType="java.lang.Integer">
+		select  <include refid="sqlFeild"/>  from house	where houseid=#{houseid}
+	</select>
+
+	<select id="findPageAll" resultMap="houseinfo" parameterType="java.util.Map">
+		select  <include refid="sqlFeild"/>  from house	
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="title!=null&amp;&amp;title.length()&gt;0">title like '%${title}%'</if>
+			<if test="styleid!=null">and  styleid=#{styleid}</if>
+			<if test="minArea!=null">and house_area&gt;=#{minArea}</if>
+			<if test="maxArea!=null">and house_area&lt;=#{maxArea}</if>
+			<if test="minPrice!=null">and  house_price&gt;=#{minPrice}</if>
+			<if test="maxPrice!=null">and  house_price&lt;=#{maxPrice}</if>
+			<if test="upperRegion!=null&amp;&amp;upperRegion.length()&gt;0">
+				and  street like '${upperRegion}%'
+			</if>
+			<if test="userid!=null">and  userid=#{userid}</if>
+		</trim>
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select  count(1)  from house	
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="title!=null&amp;&amp;title.length()&gt;0">title like '%${title}%'</if>
+			<if test="styleid!=null">and  styleid=#{styleid}</if>
+			<if test="minArea!=null">and house_area&gt;=#{minArea}</if>
+			<if test="maxArea!=null">and house_area&lt;=#{maxArea}</if>
+			<if test="minPrice!=null">and  house_price&gt;=#{minPrice}</if>
+			<if test="maxPrice!=null">and  house_price&lt;=#{maxPrice}</if>
+			<if test="upperRegion!=null&amp;&amp;upperRegion.length()&gt;0">and  street like '${upperRegion}%'</if>
+			<if test="userid!=null">and  userid=#{userid}</if>
+		</trim>
+	</select>
+
+	<update id="update" parameterType="com.renting.entity.House">
+		update house
+		   <set >
+			<if test="picPath!=null"		>pic_path=#{picPath},</if>
+			<if test="title!=null"		>title=#{title},</if>
+			<if test="houseArea!=null"	>house_area=#{houseArea},</if>
+			<if test="housePrice!=null"	>house_price=#{housePrice},</if>
+			<if test="houseDate!=null"	>house_date=#{houseDate},</if>
+			<if test="phone!=null"		>phone=#{phone},</if>
+			<if test="summary!=null"		>summary=#{summary},</if>
+			<if test="publicDate!=null"	>public_date=#{publicDate},</if>
+			<if test="houseStyle.styleid!=null"		>styleid=#{houseStyle.styleid},</if>
+			<if test="region.code!=null"		>street=#{region.code}</if>
+			</set>
+		 where houseid = #{houseid}
+
+</update>
+
+	<insert id="insert" parameterType="com.renting.entity.House">
+		insert into house(<include refid="insertsql"/>)values(
+				#{picPath},	
+				#{title},		
+				#{houseArea},	
+				#{housePrice},
+				#{houseDate},	
+				#{phone},		
+				#{summary},	
+				#{publicDate},
+				#{houseStyle.styleid},	
+				#{region.code},
+				#{u.userid}
+				)
+	</insert>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+	 	delete from house where houseid=#{houseid}
+	</delete>
+	
+	<delete id="delBatchIds" parameterType="java.util.List">
+		delete from users where houseid in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}		
+		</foreach>
+	</delete>
+	
+	
+	
+</mapper>

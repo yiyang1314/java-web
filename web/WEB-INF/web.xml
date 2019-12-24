@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>search-house</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  
+  <servlet>
+    <servlet-name>UsersServlet</servlet-name>
+    <servlet-class>com.renting.servlet.UsersServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>UsersServlet</servlet-name>
+    <url-pattern>/users_save</url-pattern>
+    <url-pattern>/users_findById</url-pattern>
+    <url-pattern>/users_updateById</url-pattern>
+    <url-pattern>/users_ids</url-pattern>
+    <url-pattern>/users_page</url-pattern>
+    <url-pattern>/users_delete</url-pattern>                     
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>com.renting.servlet.LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/users_login</url-pattern>
+    <url-pattern>/users_logout</url-pattern>
+    <url-pattern>/users_error</url-pattern>                   
+  </servlet-mapping>
+  
+  
+   <servlet>
+    <servlet-name>TRegionServlet</servlet-name>
+    <servlet-class>com.renting.servlet.TRegionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TRegionServlet</servlet-name>
+    <url-pattern>/region_findBySupperId</url-pattern>
+    <url-pattern>/region_findAll</url-pattern>
+    <url-pattern>/region_save</url-pattern>
+    <url-pattern>/region_findById</url-pattern>
+    <url-pattern>/region_updateById</url-pattern>
+    <url-pattern>/region_ids</url-pattern>
+    <url-pattern>/region_page</url-pattern>
+    <url-pattern>/region_delete</url-pattern>                     
+  </servlet-mapping>
+  
+
+   <servlet>
+    <servlet-name>HouseStyle</servlet-name>
+    <servlet-class>com.renting.servlet.HouseStyleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HouseStyle</servlet-name>
+    <url-pattern>/style_findAll</url-pattern>
+    <url-pattern>/style_save</url-pattern>
+    <url-pattern>/style_findById</url-pattern>                 
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>HoseServlet</servlet-name>
+    <servlet-class>com.renting.servlet.HoseServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HoseServlet</servlet-name>
+    <url-pattern>/house_findAll</url-pattern>
+    <url-pattern>/house_save</url-pattern>
+    <url-pattern>/house_findById</url-pattern>
+    <url-pattern>/house_updateById</url-pattern>
+    <url-pattern>/house_ids</url-pattern>
+    <url-pattern>/house_admin</url-pattern>
+    <url-pattern>/house_page</url-pattern>
+    <url-pattern>/house_delete</url-pattern>                     
+  </servlet-mapping>
+  
+    <servlet>
+    <servlet-name>PayServlet</servlet-name>
+    <servlet-class>com.kdyzm.servlet.PayServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>BackServlet</servlet-name>
+    <servlet-class>com.kdyzm.servlet.BackServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayServlet</servlet-name>
+    <url-pattern>/payServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>BackServlet</servlet-name>
+    <url-pattern>/backServlet</url-pattern>
+  </servlet-mapping>
+  
+  
+</web-app>

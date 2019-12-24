@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renting.dao.TRegionMapper">
+	
+	<resultMap type="com.renting.entity.TRegion" id="regioninfo">
+			<id column="CODE" property="code"/>
+			<result column="country_code" property="countryCode"/>
+			<result column="region_name_e" property="regionNameE"/>
+			<result column="region_name_c" property="regionNameC"/>
+			<result column="level" property="level"/>
+			<result column="upper_region" property="upperRegion"/>
+	</resultMap>
+	
+	<select id="getFathers" resultType="java.lang.String" parameterType="java.lang.String">
+		select region_name_c from t_region 
+		<where>
+			code=(select upper_region from t_region where code=#{street})
+<!-- 			<if test="(street!=null)&amp;&amp;(street&gt;6)"> -->
+<!-- 				code=#{street} -->
+<!-- 			</if> -->
+		</where>
+		
+	</select>
+
+	<sql id="sqlFeild">
+		CODE,country_code,region_name_e,region_name_c,level,upper_region
+	</sql>
+	<sql id="insertsql">
+		country_code,region_name_e,region_name_c,level,upper_region
+	</sql>
+	
+	<!-- 查询
+		这里指定了实体类和表的映射关系,默认情况下，如果表中字段的名字和实体类属性名一致，是能够自动封装的;
+	
+		id : 自定义，将来通过namespace.id的方式，来调用对应的sql语句;
+		resultType : 查询的时候，用来封装查询结果,表示查询的结果封装成哪个实体类对象
+	 -->
+	<select id="findAll" resultMap="regioninfo">
+		select <include refid="sqlFeild"/> from t_region 
+		where upper_region='1101'
+	</select>
+	
+	<select id="findBySupperId" resultMap="regioninfo"  parameterType="java.lang.String">
+		select <include refid="sqlFeild"/> from t_region WHERE upper_region=#{supper_region}
+	
+	</select>
+	
+	<!-- parameterType ：表示传入参数的类型 -->
+	<select id="findById" parameterType="java.lang.String" resultMap="regioninfo" >
+		select <include refid="sqlFeild"/> from t_region 
+		<where>
+				CODE=#{CODE}
+		</where>
+		
+		
+	</select>
+	
+	<!-- 增加 -->
+	<insert id="insert" parameterType="com.renting.entity.House" useGeneratedKeys="true" keyColumn="houseid" keyProperty="houseid">
+		insert into t_region(<include refid="insertsql"/>)values(			
+				#{region.countryCode},
+				#{region.regionNameE},
+				#{region.regionNameC},
+				#{region.level}	,	
+				#{region.upperRegion}
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.renting.entity.House" >
+		update t_region
+		   <set >
+			<if test="region.countryCode!=null" > country_code=	#{region.countryCode},</if>
+			<if test="region.regionNameE!=null" > region_name_e=	#{region.regionNameE},</if>
+			<if test="region.regionNameC!=null" > region_name_c=	#{region.regionNameC},</if>
+			<if test="region.level!=null" > level=			#{region.level},		</if>
+			<if test="region.upperRegion!=null" > upper_region=	#{region.upperRegion},</if>
+		</set>
+		 where code = #{region.code}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="java.lang.String" >
+		delete from t_region  where code = #{code}
+	</delete>
+	
+
+	
+	<select id="findPageAll" parameterType="java.util.Map" resultMap="regioninfo" >
+		 select <include refid="sqlFeild"/> from t_region 
+		<where>
+			${column} like '%keywords%' limit currentPage,pageSize
+		</where>
+	</select>
+
+	 <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+	 	select count(1) from t_region where ${column} like '%${kw}%'
+	 </select>
+	
+</mapper>

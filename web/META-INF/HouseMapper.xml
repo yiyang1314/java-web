@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sz.gl.dao.DeptDao">
+	
+	<resultMap type="com.renting.entity.House" id="resultinfo">
+		<id column="houseid" property="houseid"/>
+		<result column="pic_path" property="picPath"/>
+		<result column="title" property="title"/>
+		<result column="house_area" property="houseArea"/>
+		<result column="house_price" property="housePrice"/>
+		<result column="house_date" property="houseDate"/>
+		<result column="phone" 	property="phone"/>
+		<result column="summary" property="summary"/>
+		<result column="public_date" property="publicDate"/>
+		<result column="styleid" property="styleid"/>
+		<result column="street" property="street"/>
+	</resultMap>
+	
+	<select id="findByIdlist" resultMap="resultinfo" parameterType="java.lang.String">
+		select <include refid="sqlFeild"/> from house	 where deptno=#{deptno}
+	</select>
+	
+	<sql id="sqlFeild">
+		houseid,pic_path,title,house_area,house_price,house_date,phone,summary,public_date,styleid,street
+	</sql>
+	<sql id="insertsql">
+		pic_path,title,house_area,house_price,house_date,phone,summary,public_date,styleid,street
+	</sql>
+	
+	<!-- 查询
+		这里指定了实体类和表的映射关系,默认情况下，如果表中字段的名字和实体类属性名一致，是能够自动封装的;
+	
+		id : 自定义，将来通过namespace.id的方式，来调用对应的sql语句;
+		resultType : 查询的时候，用来封装查询结果,表示查询的结果封装成哪个实体类对象
+	 -->
+	<select id="findAll" resultMap="resultinfo" >
+		select <include refid="sqlFeild"/> from house	
+	</select>
+	
+	<!-- parameterType ：表示传入参数的类型 -->
+	<select id="findById" parameterType="java.lang.Integer" resultMap="resultinfo" >
+		select <include refid="sqlFeild"/> from house	 where houseid=#{houseid}
+	</select>
+	
+	<!-- 增加 -->
+	<insert id="insert" parameterType="com.renting.entity.House" useGeneratedKeys="true" keyColumn="houseid" keyProperty="houseid">
+		insert into house(<include refid="sqlinsert"/>)values(	
+				#{house.picPath},	
+				#{house.title},		
+				#{house.houseArea},	
+				#{house.housePrice},
+				#{house.houseDate},	
+				#{house.phone},		
+				#{house.summary},	
+				#{house.publicDate},
+				#{house.styleid},	
+				#{house.street}	
+		)
+	</insert>
+	
+	
+	<!-- 修改
+		这里，通过设置全局参数jdbcTypeForNull,或者设置jdbcType的方式，能够解决字段为空的异常,让程序能够正常执行；
+		但是传参为空的时候，会清空对应的字段;
+		要想解决，需要借助于动态sql
+	 -->
+	<update id="update" parameterType="com.renting.entity.House" >
+		update house
+		   <set >
+			<if test="house.picPath!=null"		>pic_path=#{house.picPath},</if>
+			<if test="house.title!=null"		>title=#{house.title},</if>
+			<if test="house.houseArea!=null"	>house_area=#{house.houseArea},</if>
+			<if test="house.housePrice!=null"	>house_price=#{house.housePrice},</if>
+			<if test="house.houseDate!=null"	>house_date=#{house.houseDate},</if>
+			<if test="house.phone!=null"		>phone=#{house.phone},</if>
+			<if test="house.summary!=null"		>summary=#{house.summary},</if>
+			<if test="house.publicDate!=null"	>public_date=#{house.publicDate},</if>
+			<if test="house.styleid!=null"		>styleid=#{house.styleid},</if>
+			<if test="house.street!=null"		>street=#{house.street}</if>
+			</set>
+		 where houseid = #{house.houseid}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="resultinfo" >
+		delete from house  where houseid = #{houseid}
+	</delete>
+	
+
+	
+	<select id="findPageAll" parameterType="java.util.Map" resultType="resultinfo" >
+		 select <include refid="sqlFeild"/> from house 
+		<where>
+			${column} like '%keywords%' limit currentPage,pageSize
+		</where>
+	</select>
+
+	 <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+	 	select count(1) from house where ${column} like '%${kw}%'
+	 </select>
+	
+</mapper>
